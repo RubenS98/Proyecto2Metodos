@@ -1,11 +1,10 @@
-import logo from './logo.svg';
 import './App.css';
-import React, { useState } from 'react';
-import { Backdrop, CircularProgress, Button } from '@material-ui/core';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route, } from 'react-router-dom';
 
 import Inicio from './layouts/Inicio';
 import MM1 from './layouts/MM1';
+import MMS from './layouts/MMS';
 
 function App() {
   return (
@@ -13,6 +12,7 @@ function App() {
         <>
           <Route exact path="/" element={<Inicio/>}/>
           <Route exact path="/mm1" element={<MM1/>}/>
+          <Route exact path="/mms" element={<MMS/>}/>
         </>
     </Routes>
   );

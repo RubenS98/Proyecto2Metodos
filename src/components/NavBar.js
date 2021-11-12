@@ -1,6 +1,5 @@
 import React from 'react';
-import { Grid, Button, Tabs, Tab, Box } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Tabs, Tab } from '@material-ui/core';
 
 function NavBar(props) {
     const [value, setValue] = React.useState(props.position);

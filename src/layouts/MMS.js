@@ -5,13 +5,14 @@ import { Grid, Button, Box, TextField,
 import NavBar from '../components/NavBar';
 import axios from 'axios';
 
-function MM1() {
+function MMS() {
   const [ansError, setAnsError] = useState(false);
   const [helperText1, setHT1] = useState('');
   const [helperText2, setHT2] = useState('');
   const [helperText3, setHT3] = useState('');
   const [lambda, setLambda] = useState();
   const [miu, setMiu] = useState();
+  const [s, setS] = useState();
   const [n, setN] = useState();
   const [cw, setCW] = useState();
   const [cs, setCS] = useState();
@@ -26,26 +27,40 @@ function MM1() {
     };
   const handleSubmit2 = (event) => {
     event.preventDefault();
+    let result;
     if (n<0){
-      setHT2('Valores deben ser mayores a 0.')
-    }
-    else{
-      setHT2('')
-      setPN(values[1]*values[0]**parseInt(n));
-    }
+        setHT2('Valores deben ser mayores a 0.')
+      }
+      else{
+        setHT2('')
+        if(n<s){
+            result=((lambda/miu)**n)/fact(n)
+        }
+        else{
+            result=((lambda/miu)**n)/(fact(s)*s**(n-s))
+        }
+        setPN((values[1]*result).toFixed(10));
+      }
     
   };
   const handleSubmit3 = (event) => {
     event.preventDefault();
     if (cw<0 || cs<0){
-      setHT3('Valores deben ser mayores a 0.')
-    }
-    else{
-      setHT3('')
-      setCT(values[2]*cw+cs*1);
-    }
+        setHT3('Valores deben ser mayores a 0.')
+      }
+      else{
+        setHT3('')
+        setCT(values[2]*cw+s*cs);
+      }
     
   };
+
+  const fact = (num) => {
+    if (num === 0)
+      { return 1; }
+    else
+      { return num * fact( num - 1 ); }
+};
   
   const handleLambdaChange = (event) => {
       setLambda(event.target.value);
@@ -53,6 +68,9 @@ function MM1() {
   const handleMiuChange = (event) => {
       setMiu(event.target.value);
   };
+  const handleSChange = (event) => {
+    setS(event.target.value);
+};
   const handleNChange = (event) => {
     setN(event.target.value);
   };
@@ -67,19 +85,20 @@ function MM1() {
       const fetchData = async () => {
         try {
           const res = await axios({
-            url: `http://localhost:8000/mm1/${lambda}/${miu}`,
+            url: `http://localhost:8000/mms/${lambda}/${miu}/${s}`,
           });
           
-          setValues([res.data.roh,1-res.data.roh,res.data.Lq,res.data.L,res.data.Wq,res.data.W])
+          setValues([res.data.roh.toFixed(10),res.data.P0.toFixed(10),res.data.Lq.toFixed(10),
+            res.data.L.toFixed(10),res.data.Wq.toFixed(10),res.data.W.toFixed(10)])
         } catch (error) {
           console.log(error);
         }
       };
-      if (lambda<0 || miu<0){
+      if (lambda<0 || miu<0 || s<0){
         setHT1('Valores deben ser mayores a 0.')
       }
-      else if(lambda>miu){
-        setHT1('Miu debe ser mayor a lambda.')
+      else if(lambda>(miu*s)){
+        setHT1('Miu por s debe ser mayor a lambda.')
       }
       else{
         setHT1('')
@@ -91,11 +110,11 @@ function MM1() {
   return (
       <Grid container spacing={3} align='center'>
           <Box sx={{ width: '100%' }}>
-              <NavBar position={1}/>
+              <NavBar position={2}/>
           </Box>
           <Grid container item xs={12} alignItems="center" justifyContent="space-evenly" style={{padding:'1%'}}>
             <Grid item xs={12}>
-              <h1>M/M/1</h1>
+              <h1>M/M/S</h1>
             </Grid>
               <Grid item xs={4}>
                 <form onSubmit={handleSubmit}>
@@ -115,6 +134,14 @@ function MM1() {
                                 variant="filled"
                                 value={miu}
                                 onChange={handleMiuChange}
+                            />
+                            <TextField
+                                id="s"
+                                label="s"
+                                type="number"
+                                variant="filled"
+                                value={s}
+                                onChange={handleSChange}
                             />
                         <Button type="submit" variant="contained" style={{color: 'black', background: 'white'}}>
                             Calcular
@@ -275,4 +302,4 @@ function MM1() {
   );
 }
 
-export default MM1
+export default MMS
