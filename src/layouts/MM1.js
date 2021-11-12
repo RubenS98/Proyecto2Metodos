@@ -40,6 +40,9 @@ function MM1() {
     if (cw<0 || cs<0){
       setHT3('Valores deben ser mayores a 0.')
     }
+    else if(values[0]==""){
+      setHT3('Primero hay que introducir lambda y miu.')
+    }
     else{
       setHT3('')
       setCT(values[2]*cw+cs*1);

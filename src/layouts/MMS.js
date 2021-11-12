@@ -48,6 +48,9 @@ function MMS() {
     if (cw<0 || cs<0){
         setHT3('Valores deben ser mayores a 0.')
       }
+      else if(values[0]==""){
+        setHT3('Primero hay que introducir lambda, miu y s.')
+      }
       else{
         setHT3('')
         setCT(values[2]*cw+s*cs);
