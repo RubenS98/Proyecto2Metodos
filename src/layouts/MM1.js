@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Grid, Button, Box, TextField,
   FormControl, FormHelperText } from '@material-ui/core';
 
@@ -11,18 +11,44 @@ function MM1() {
   const [helperText2, setHT2] = useState('');
   const [helperText3, setHT3] = useState('');
   const [lambda, setLambda] = useState();
-  const [miu, setMiu] = useState();
-  const [n, setN] = useState();
-  const [cw, setCW] = useState();
-  const [cs, setCS] = useState();
+  const [miu, setMiu] = useState('');
+  const [n, setN] = useState('');
+  const [cw, setCW] = useState('');
+  const [cs, setCS] = useState('');
   const [pn, setPN] = useState("");
   const [ct, setCT] = useState("");
   const [values, setValues] = useState(["","","","","",""]);
-  const [count, setCount]=useState(0);
+
+  const handleFetch = () => {
+    const fetchData = async () => {
+      try {
+        const res = await axios({
+          url: `http://localhost:8000/mm1/${lambda}/${miu}`,
+        });
+
+        let result=res.data;
+        
+        setValues([result.roh,1-result.roh,result.Lq,result.L,result.Wq,result.W])
+      } catch (error) {
+        console.log(error);
+        setValues([2,2,2,2,2,2]);
+      }
+    };
+    if (lambda<0 || miu<0){
+      setHT1('Valores deben ser mayores a 0.')
+    }
+    else if(lambda>miu){
+      setHT1('Miu debe ser mayor a lambda.')
+    }
+    else{
+      setHT1('')
+      fetchData();
+    }
+  }
 
   const handleSubmit = (event) => {
       event.preventDefault();
-      setCount(count+1);
+      handleFetch();
     };
   const handleSubmit2 = (event) => {
     event.preventDefault();
@@ -66,30 +92,7 @@ function MM1() {
     setCS(event.target.value);
   };
 
-  useEffect( () => {
-      const fetchData = async () => {
-        try {
-          const res = await axios({
-            url: `http://localhost:8000/mm1/${lambda}/${miu}`,
-          });
-          
-          setValues([res.data.roh,1-res.data.roh,res.data.Lq,res.data.L,res.data.Wq,res.data.W])
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      if (lambda<0 || miu<0){
-        setHT1('Valores deben ser mayores a 0.')
-      }
-      else if(lambda>miu){
-        setHT1('Miu debe ser mayor a lambda.')
-      }
-      else{
-        setHT1('')
-        fetchData();
-      }
-    
-  }, [ count ]);
+  
 
   return (
       <Grid container spacing={3} align='center'>
@@ -98,7 +101,7 @@ function MM1() {
           </Box>
           <Grid container item xs={12} alignItems="center" justifyContent="space-evenly" style={{padding:'1%'}}>
             <Grid item xs={12}>
-              <h1>M/M/1</h1>
+              <h1>Modelo M/M/1</h1>
             </Grid>
               <Grid item xs={4}>
                 <form onSubmit={handleSubmit}>
@@ -108,7 +111,7 @@ function MM1() {
                                 label="lambda"
                                 type="number"
                                 variant="filled"
-                                value={lambda}
+                                value={lambda || ""}
                                 onChange={handleLambdaChange}
                             />
                             <TextField
@@ -119,7 +122,7 @@ function MM1() {
                                 value={miu}
                                 onChange={handleMiuChange}
                             />
-                        <Button type="submit" variant="contained" style={{color: 'black', background: 'white'}}>
+                        <Button type="submit" id="calcular1" variant="contained" style={{color: 'black', background: 'white'}}>
                             Calcular
                         </Button>
                         <FormHelperText style={{color:'red'}}>{helperText1}</FormHelperText>
@@ -206,7 +209,7 @@ function MM1() {
                                   onChange={handleNChange}
                               />
                           <Button type="submit" variant="contained" style={{color: 'black', background: 'white'}}>
-                              Calcular
+                              Calcular Pn
                           </Button>
                           <FormHelperText style={{color:'red'}}>{helperText2}</FormHelperText>
                       </FormControl>
@@ -252,7 +255,7 @@ function MM1() {
                                   onChange={handleCSChange}
                               />
                           <Button type="submit" variant="contained" style={{color: 'black', background: 'white'}}>
-                              Calcular
+                              Calcular CT
                           </Button>
                           <FormHelperText style={{color:'red'}}>{helperText3}</FormHelperText>
                       </FormControl>

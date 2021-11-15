@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Grid, Button, Box, TextField,
   FormControl, FormHelperText } from '@material-ui/core';
 
@@ -19,11 +19,35 @@ function MMS() {
   const [pn, setPN] = useState("");
   const [ct, setCT] = useState("");
   const [values, setValues] = useState(["","","","","",""]);
-  const [count, setCount]=useState(0);
 
+  const handleFetch = () => {
+    const fetchData = async () => {
+      try {
+        const res = await axios({
+          url: `http://localhost:8000/mm1/${lambda}/${miu}`,
+        });
+        
+        setValues([res.data.roh,1-res.data.roh,res.data.Lq,res.data.L,res.data.Wq,res.data.W])
+      } catch (error) {
+        console.log(error);
+        setValues([2,2,2,2,2,2]);
+      }
+    };
+    if (lambda<0 || miu<0 || s<0){
+      setHT1('Valores deben ser mayores a 0.')
+    }
+    else if(lambda>(miu*s)){
+      setHT1('Miu por s debe ser mayor a lambda.')
+    }
+    else{
+      setHT1('')
+      fetchData();
+    }
+  }
+  
   const handleSubmit = (event) => {
       event.preventDefault();
-      setCount(count+1);
+      handleFetch();
     };
   const handleSubmit2 = (event) => {
     event.preventDefault();
@@ -84,32 +108,6 @@ function MMS() {
     setCS(event.target.value);
   };
 
-  useEffect( () => {
-      const fetchData = async () => {
-        try {
-          const res = await axios({
-            url: `http://localhost:8000/mms/${lambda}/${miu}/${s}`,
-          });
-          
-          setValues([res.data.roh.toFixed(10),res.data.P0.toFixed(10),res.data.Lq.toFixed(10),
-            res.data.L.toFixed(10),res.data.Wq.toFixed(10),res.data.W.toFixed(10)])
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      if (lambda<0 || miu<0 || s<0){
-        setHT1('Valores deben ser mayores a 0.')
-      }
-      else if(lambda>(miu*s)){
-        setHT1('Miu por s debe ser mayor a lambda.')
-      }
-      else{
-        setHT1('')
-        fetchData();
-      }
-    
-  }, [ count ]);
-
   return (
       <Grid container spacing={3} align='center'>
           <Box sx={{ width: '100%' }}>
@@ -117,7 +115,7 @@ function MMS() {
           </Box>
           <Grid container item xs={12} alignItems="center" justifyContent="space-evenly" style={{padding:'1%'}}>
             <Grid item xs={12}>
-              <h1>M/M/S</h1>
+              <h1>Modelo M/M/S</h1>
             </Grid>
               <Grid item xs={4}>
                 <form onSubmit={handleSubmit}>
@@ -233,7 +231,7 @@ function MMS() {
                                   onChange={handleNChange}
                               />
                           <Button type="submit" variant="contained" style={{color: 'black', background: 'white'}}>
-                              Calcular
+                              Calcular Pn
                           </Button>
                           <FormHelperText style={{color:'red'}}>{helperText2}</FormHelperText>
                       </FormControl>
@@ -279,7 +277,7 @@ function MMS() {
                                   onChange={handleCSChange}
                               />
                           <Button type="submit" variant="contained" style={{color: 'black', background: 'white'}}>
-                              Calcular
+                              Calcular CT
                           </Button>
                           <FormHelperText style={{color:'red'}}>{helperText3}</FormHelperText>
                       </FormControl>
