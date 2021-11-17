@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Grid, Button, Box, TextField,
   FormControl, FormHelperText } from '@material-ui/core';
@@ -5,16 +6,18 @@ import { Grid, Button, Box, TextField,
 import NavBar from '../components/NavBar';
 import axios from 'axios';
 
-function MM1() {
+function MMSK() {
   const [ansError, setAnsError] = useState(false);
   const [helperText1, setHT1] = useState('');
   const [helperText2, setHT2] = useState('');
   const [helperText3, setHT3] = useState('');
   const [lambda, setLambda] = useState();
-  const [miu, setMiu] = useState('');
-  const [n, setN] = useState('');
-  const [cw, setCW] = useState('');
-  const [cs, setCS] = useState('');
+  const [miu, setMiu] = useState();
+  const [s, setS] = useState();
+  const [k, setK] = useState();
+  const [n, setN] = useState();
+  const [cw, setCW] = useState();
+  const [cs, setCS] = useState();
   const [pn, setPN] = useState("");
   const [ct, setCT] = useState("");
   const [values, setValues] = useState(["","","","","",""]);
@@ -23,58 +26,73 @@ function MM1() {
     const fetchData = async () => {
       try {
         const res = await axios({
-          url: `http://localhost:8000/mm1/${lambda}/${miu}`,
+          url: `http://localhost:8000/mmsk/${lambda}/${miu}/${s}/${k}`,
         });
-
-        let result=res.data;
         
-        setValues([result.roh,1-result.roh,result.Lq,result.L,result.Wq,result.W])
+        setValues([res.data.roh,res.data.P0,res.data.Lq,res.data.L,res.data.Wq,res.data.W])
       } catch (error) {
         console.log(error);
-        setValues([2,2,2,2,2,2]);
+        setHT1("Error inesperado en el calculo.")
+        setValues([0,0,0,0,0,0]);
       }
     };
-    if (lambda<0 || miu<0){
+    if (lambda<0 || miu<0 || s<0 || k<0){
       setHT1('Valores deben ser mayores a 0.')
     }
-    else if(lambda>miu){
-      setHT1('Miu debe ser mayor a lambda.')
+    else if(lambda>(miu*s)){
+      setHT1('Miu por s debe ser mayor a lambda.')
     }
     else{
       setHT1('')
       fetchData();
     }
   }
-
+  
   const handleSubmit = (event) => {
       event.preventDefault();
       handleFetch();
     };
   const handleSubmit2 = (event) => {
     event.preventDefault();
+    let result;
     if (n<0){
-      setHT2('Valores deben ser mayores a 0.')
-    }
-    else{
-      setHT2('')
-      setPN(values[1]*values[0]**parseInt(n));
-    }
+        setHT2('Valores deben ser mayores a 0.')
+      }
+      else{
+        setHT2('')
+        if(n<=s){
+            result = ((lambda/miu)**n)/fact(n);
+        }
+        else if(n <= k){
+            result = ((lambda/miu)**n)/(fact(s) * s**(n-s));
+        } else {
+            result = 0
+        }
+        setPN((values[1]*result).toFixed(10));
+      }
     
   };
   const handleSubmit3 = (event) => {
     event.preventDefault();
     if (cw<0 || cs<0){
-      setHT3('Valores deben ser mayores a 0.')
-    }
-    else if(values[0]==""){
-      setHT3('Primero hay que introducir lambda y miu.')
-    }
-    else{
-      setHT3('')
-      setCT(values[2]*cw+cs*1);
-    }
+        setHT3('Valores deben ser mayores a 0.')
+      }
+      else if(values[0]==""){
+        setHT3('Primero hay que introducir lambda, miu y s.')
+      }
+      else{
+        setHT3('')
+        setCT(values[2]*cw+s*cs);
+      }
     
   };
+
+  const fact = (num) => {
+    if (num === 0)
+      { return 1; }
+    else
+      { return num * fact( num - 1 ); }
+};
   
   const handleLambdaChange = (event) => {
       setLambda(event.target.value);
@@ -82,6 +100,13 @@ function MM1() {
   const handleMiuChange = (event) => {
       setMiu(event.target.value);
   };
+  const handleSChange = (event) => {
+    setS(event.target.value);
+};
+
+  const handleKChange = (event) => {
+    setK(event.target.value);
+};
   const handleNChange = (event) => {
     setN(event.target.value);
   };
@@ -92,16 +117,14 @@ function MM1() {
     setCS(event.target.value);
   };
 
-  
-
   return (
       <Grid container spacing={3} align='center'>
           <Box sx={{ width: '100%' }}>
-              <NavBar position={1}/>
+              <NavBar position={2}/>
           </Box>
           <Grid container item xs={12} alignItems="center" justifyContent="space-evenly" style={{padding:'1%'}}>
             <Grid item xs={12}>
-              <h1>Modelo M/M/1</h1>
+              <h1>Modelo M/M/S</h1>
             </Grid>
               <Grid item xs={4}>
                 <form onSubmit={handleSubmit}>
@@ -111,7 +134,7 @@ function MM1() {
                                 label="lambda"
                                 type="number"
                                 variant="filled"
-                                value={lambda || ""}
+                                value={lambda}
                                 onChange={handleLambdaChange}
                             />
                             <TextField
@@ -122,7 +145,23 @@ function MM1() {
                                 value={miu}
                                 onChange={handleMiuChange}
                             />
-                        <Button type="submit" id="calcular1" variant="contained" style={{color: 'black', background: 'white'}}>
+                            <TextField
+                                id="s"
+                                label="s"
+                                type="number"
+                                variant="filled"
+                                value={s}
+                                onChange={handleSChange}
+                            />
+                            <TextField
+                                id="k"
+                                label="k"
+                                type="number"
+                                variant="filled"
+                                value={k}
+                                onChange={handleKChange}
+                            />
+                        <Button type="submit" variant="contained" style={{color: 'black', background: 'white'}}>
                             Calcular
                         </Button>
                         <FormHelperText style={{color:'red'}}>{helperText1}</FormHelperText>
@@ -281,4 +320,4 @@ function MM1() {
   );
 }
 
-export default MM1
+export default MMSK
