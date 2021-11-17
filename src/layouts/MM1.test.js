@@ -88,7 +88,7 @@ describe('Test input validation', () => {
 
     userEvent.click(screen.getByText('Calcular Pn'))
 
-    screen.getByText('Valores deben ser mayores a 0.')
+    screen.getByText('Valores deben ser positivos.')
     
   });
 
@@ -100,7 +100,7 @@ describe('Test input validation', () => {
 
     userEvent.click(screen.getByText('Calcular CT'))
 
-    screen.getByText('Valores deben ser mayores a 0.')
+    screen.getByText('Valores deben ser positivos.')
     
   });
 

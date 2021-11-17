@@ -95,7 +95,7 @@ describe('Test input validation', () => {
 
     userEvent.click(screen.getByText('Calcular Pn'))
 
-    screen.getByText('Valores deben ser mayores a 0.')
+    screen.getByText('Valores deben ser positivos.')
     
   });
 
@@ -202,6 +202,32 @@ describe("Run cases", () => {
     userEvent.click(screen.getByText('Calcular Pn'))
 
     expect(screen.getByLabelText('Pn')).toHaveValue("0.4444444444");
+  });
+
+  test('test Pn calculation n>=s with s=3', async () => {
+
+    const vals = [
+      { objectID: '1', title: 'Hello' },
+    ];
+
+    axios.get.mockImplementationOnce(() =>
+      Promise.resolve({ data: vals })
+    );
+
+    render(<MMS />);
+    userEvent.type(screen.getByLabelText('lambda'), '2');
+
+    userEvent.type(screen.getByLabelText('miu'), '3');
+
+    userEvent.type(screen.getByLabelText('s'), '3');
+
+    await userEvent.click(screen.getByText('Calcular'))
+
+    userEvent.type(screen.getByText('n'), '5');
+
+    userEvent.click(screen.getByText('Calcular Pn'))
+
+    expect(screen.getByLabelText('Pn')).toHaveValue("0.0048773053");
   });
 
   test('test costs calculation', async () => {
