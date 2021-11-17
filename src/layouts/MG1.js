@@ -26,19 +26,17 @@ function MG1() {
         const res = await axios({
           url: `http://localhost:8000/mg1/${lambda}/${miu}/${stdev}`,
         });
-
-        let result=res.data;
-        
-        setValues([result.roh,result.P0,result.Lq,result.L,result.Wq,result.W])
+        setValues([res.data.roh.toFixed(4),res.data.P0.toFixed(4),res.data.Lq.toFixed(4),res.data.L.toFixed(4),res.data.Wq.toFixed(4),res.data.W.toFixed(4)])
       } catch (error) {
         console.log(error);
+        setHT1("Error inesperado en el calculo.")
         setValues([2,2,2,2,2,2]);
       }
     };
-    if (lambda<0 || miu<0 || stdev<0){
+    if (lambda<=0 || miu<=0 || stdev<0){
       setHT1('Valores deben ser mayores a 0.')
     }
-    else if(lambda>miu){
+    else if(lambda>=miu){
       setHT1('Miu debe ser mayor a lambda.')
     }
     else{
@@ -54,7 +52,7 @@ function MG1() {
   const handleSubmit2 = (event) => {
     event.preventDefault();
     if (n<0){
-      setHT2('Valores deben ser mayores a 0.')
+      setHT2('Valores deben ser positivos.')
     }
     else{
       setHT2('')
@@ -65,10 +63,10 @@ function MG1() {
   const handleSubmit3 = (event) => {
     event.preventDefault();
     if (cw<0 || cs<0){
-      setHT3('Valores deben ser mayores a 0.')
+      setHT3('Valores deben ser positivos.')
     }
     else if(values[0]==""){
-      setHT3('Primero hay que introducir lambda y miu.')
+      setHT3('Primero hay que introducir lambda, miu y stdev.')
     }
     else{
       setHT3('')
@@ -78,10 +76,10 @@ function MG1() {
   };
   
   const handleLambdaChange = (event) => {
-      setLambda(event.target.value);
+      setLambda(parseInt(event.target.value));
   };
   const handleMiuChange = (event) => {
-      setMiu(event.target.value);
+      setMiu(parseInt(event.target.value));
   };
   const handleStdevChange = (event) => {
     setStdev(event.target.value);
@@ -101,7 +99,7 @@ function MG1() {
   return (
       <Grid container spacing={3} align='center'>
           <Box sx={{ width: '100%' }}>
-              <NavBar position={1}/>
+              <NavBar position={4}/>
           </Box>
           <Grid container item xs={12} alignItems="center" justifyContent="space-evenly" style={{padding:'1%'}}>
             <Grid item xs={12}>
@@ -130,6 +128,7 @@ function MG1() {
                                 id="stdev"
                                 label="stdev"
                                 type="number"
+                                step="0.01"
                                 variant="filled"
                                 value={stdev}
                                 onChange={handleStdevChange}

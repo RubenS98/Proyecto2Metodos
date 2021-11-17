@@ -30,6 +30,7 @@ function MMS() {
         setValues([res.data.roh.toFixed(10),res.data.P0.toFixed(10),res.data.Lq.toFixed(10),res.data.L.toFixed(10),res.data.Wq.toFixed(10),res.data.W.toFixed(10)])
       } catch (error) {
         console.log(error);
+        setHT1("Error inesperado en el calculo.")
         setValues([2,2,2,2,2,2]);
       }
     };

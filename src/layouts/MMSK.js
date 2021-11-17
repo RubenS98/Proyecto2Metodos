@@ -29,17 +29,17 @@ function MMSK() {
           url: `http://localhost:8000/mmsk/${lambda}/${miu}/${s}/${k}`,
         });
         
-        setValues([res.data.roh,res.data.P0,res.data.Lq,res.data.L,res.data.Wq,res.data.W])
+        setValues([res.data.roh.toFixed(4),res.data.P0.toFixed(4),res.data.Lq.toFixed(4),res.data.L.toFixed(4),res.data.Wq.toFixed(4),res.data.W.toFixed(4)])
       } catch (error) {
         console.log(error);
         setHT1("Error inesperado en el calculo.")
-        setValues([0,0,0,0,0,0]);
+        setValues([2,2,2,2,2,2]);
       }
     };
-    if (lambda<0 || miu<0 || s<0 || k<0){
+    if (lambda<=0 || miu<=0 || s<=0 || k<=0){
       setHT1('Valores deben ser mayores a 0.')
     }
-    else if(lambda>(miu*s)){
+    else if(lambda>=(miu*s)){
       setHT1('Miu por s debe ser mayor a lambda.')
     }
     else{
@@ -56,11 +56,11 @@ function MMSK() {
     event.preventDefault();
     let result;
     if (n<0){
-        setHT2('Valores deben ser mayores a 0.')
+        setHT2('Valores deben ser positivos.')
       }
       else{
         setHT2('')
-        if(n<=s){
+        if(n<s){
             result = ((lambda/miu)**n)/fact(n);
         }
         else if(n <= k){
@@ -78,7 +78,7 @@ function MMSK() {
         setHT3('Valores deben ser mayores a 0.')
       }
       else if(values[0]==""){
-        setHT3('Primero hay que introducir lambda, miu y s.')
+        setHT3('Primero hay que introducir lambda, miu, s y k.')
       }
       else{
         setHT3('')
@@ -92,23 +92,24 @@ function MMSK() {
       { return 1; }
     else
       { return num * fact( num - 1 ); }
-};
+  };
   
   const handleLambdaChange = (event) => {
-      setLambda(event.target.value);
+      setLambda(parseInt(event.target.value));
   };
   const handleMiuChange = (event) => {
-      setMiu(event.target.value);
+      setMiu(parseInt(event.target.value));
   };
   const handleSChange = (event) => {
-    setS(event.target.value);
-};
+    setS(parseInt(event.target.value));
+  };
 
   const handleKChange = (event) => {
-    setK(event.target.value);
-};
+    setK(parseInt(event.target.value));
+  };
+
   const handleNChange = (event) => {
-    setN(event.target.value);
+    setN(parseInt(event.target.value));
   };
   const handleCWChange = (event) => {
     setCW(event.target.value);
@@ -120,11 +121,11 @@ function MMSK() {
   return (
       <Grid container spacing={3} align='center'>
           <Box sx={{ width: '100%' }}>
-              <NavBar position={2}/>
+              <NavBar position={3}/>
           </Box>
           <Grid container item xs={12} alignItems="center" justifyContent="space-evenly" style={{padding:'1%'}}>
             <Grid item xs={12}>
-              <h1>Modelo M/M/S</h1>
+              <h1>Modelo M/M/S/K</h1>
             </Grid>
               <Grid item xs={4}>
                 <form onSubmit={handleSubmit}>

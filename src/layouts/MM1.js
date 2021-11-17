@@ -31,6 +31,7 @@ function MM1() {
         setValues([result.roh,1-result.roh,result.Lq,result.L,result.Wq,result.W])
       } catch (error) {
         console.log(error);
+        setHT1("Error inesperado en el calculo.")
         setValues([2,2,2,2,2,2]);
       }
     };

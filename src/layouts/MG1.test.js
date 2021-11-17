@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event'
-import MMSK from './MMSK';
+import MG1 from './MG1';
 import axios from 'axios';
 
 jest.mock('axios');
@@ -8,24 +8,21 @@ jest.mock('axios');
 describe('UI integrity', () => {
 
   test('renders title', () => {
-    render(<MMSK />);
-    expect(screen.getByText('Modelo M/M/S/K')).toBeInTheDocument();
+    render(<MG1 />);
+    expect(screen.getByText('Modelo M/G/1')).toBeInTheDocument();
   });
   
   test('inputs exist and work', async () => {
   
-      render(<MMSK />);
+      render(<MG1 />);
       userEvent.type(screen.getByLabelText('lambda'), '2');
       expect(screen.getByLabelText('lambda')).toHaveValue(2);
   
       userEvent.type(screen.getByLabelText('miu'), '3');
       expect(screen.getByLabelText('miu')).toHaveValue(3);
 
-      userEvent.type(screen.getByLabelText('s'), '1');
-      expect(screen.getByLabelText('s')).toHaveValue(1);
-
-      userEvent.type(screen.getByLabelText('k'), '3');
-      expect(screen.getByLabelText('k')).toHaveValue(3);
+      userEvent.type(screen.getByLabelText('stdev'), '0.1');
+      expect(screen.getByLabelText('stdev')).toHaveValue(0.1);
   
       userEvent.type(screen.getByLabelText('n'), '3');
       expect(screen.getByLabelText('n')).toHaveValue(3);
@@ -40,7 +37,7 @@ describe('UI integrity', () => {
   
   test('response inputs exist and work', async () => {
   
-      render(<MMSK />);
+      render(<MG1 />);
       expect(screen.getByLabelText('roh')).toHaveValue("");
   
       expect(screen.getByLabelText('P0')).toHaveValue("");
@@ -64,12 +61,12 @@ describe('UI integrity', () => {
 describe('Test input validation', () => {
   test('negative numbers error', async () => {
 
-    render(<MMSK />);
+    render(<MG1 />);
     userEvent.type(screen.getByLabelText('lambda'), '-1');
 
     userEvent.type(screen.getByLabelText('miu'), '-1');
 
-    userEvent.type(screen.getByLabelText('s'), '-1');
+    userEvent.type(screen.getByLabelText('stdev'), '-1');
 
     userEvent.click(screen.getByText('Calcular'))
 
@@ -79,21 +76,21 @@ describe('Test input validation', () => {
 
   test('lambda larger than miu times s error', async () => {
 
-    render(<MMSK />);
+    render(<MG1 />);
     userEvent.type(screen.getByLabelText('lambda'), '2');
 
     userEvent.type(screen.getByLabelText('miu'), '1');
 
-    userEvent.type(screen.getByLabelText('s'), '1');
+    userEvent.type(screen.getByLabelText('stdev'), '1');
 
     userEvent.click(screen.getByText('Calcular'))
 
-    screen.getByText('Miu por s debe ser mayor a lambda.')
+    screen.getByText('Miu debe ser mayor a lambda.')
   });
 
   test('negative numbers error n', async () => {
 
-    render(<MMSK />);
+    render(<MG1 />);
     userEvent.type(screen.getByLabelText('n'), '-1');
 
     userEvent.click(screen.getByText('Calcular Pn'))
@@ -104,25 +101,25 @@ describe('Test input validation', () => {
 
   test('negative numbers error costs', async () => {
 
-    render(<MMSK />);
+    render(<MG1 />);
     userEvent.type(screen.getByLabelText('Cw'), '-1');
     userEvent.type(screen.getByLabelText('Cs'), '-1');
 
     userEvent.click(screen.getByText('Calcular CT'))
 
-    screen.getByText('Valores deben ser mayores a 0.')
+    screen.getByText('Valores deben ser positivos.')
     
   });
 
   test('no metrics befote costs error', async () => {
 
-    render(<MMSK />);
+    render(<MG1 />);
     userEvent.type(screen.getByLabelText('Cw'), '1');
     userEvent.type(screen.getByLabelText('Cs'), '1');
 
     userEvent.click(screen.getByText('Calcular CT'))
 
-    screen.getByText('Primero hay que introducir lambda, miu, s y k.')
+    screen.getByText('Primero hay que introducir lambda, miu y stdev.')
     
   });
 })
@@ -138,14 +135,12 @@ describe("Run cases", () => {
       Promise.resolve({ data: vals })
     );
 
-    render(<MMSK />);
-    userEvent.type(screen.getByLabelText('lambda'), '2');
+    let result = render(<MG1 />);
+    userEvent.type(screen.getByLabelText('lambda'), '3');
 
-    userEvent.type(screen.getByLabelText('miu'), '3');
+    userEvent.type(screen.getByLabelText('miu'), '5');
 
-    userEvent.type(screen.getByLabelText('s'), '1');
-
-    userEvent.type(screen.getByLabelText('k'), '3');
+    userEvent.type(screen.getByLabelText('stdev'), '0.1');
 
     await userEvent.click(screen.getByText('Calcular'))
 
@@ -157,7 +152,7 @@ describe("Run cases", () => {
     expect(screen.getByLabelText('W')).toHaveValue("2");
   });
 
-  test('test Pn calculation n<s', async () => {
+  test('test Pn calculation n', async () => {
 
     const vals = [
       { objectID: '1', title: 'Hello' },
@@ -167,78 +162,20 @@ describe("Run cases", () => {
       Promise.resolve({ data: vals })
     );
 
-    render(<MMSK />);
-    userEvent.type(screen.getByLabelText('lambda'), '2');
+    render(<MG1 />);
+    userEvent.type(screen.getByLabelText('lambda'), '3');
 
-    userEvent.type(screen.getByLabelText('miu'), '3');
+    userEvent.type(screen.getByLabelText('miu'), '5');
 
-    userEvent.type(screen.getByLabelText('s'), '1');
-
-    userEvent.type(screen.getByLabelText('k'), '3');
+    userEvent.type(screen.getByLabelText('stdev'), '0.1');
 
     await userEvent.click(screen.getByText('Calcular'))
 
-    userEvent.type(screen.getByText('n'), '1');
+    userEvent.type(screen.getByText('n'), '2');
 
     userEvent.click(screen.getByText('Calcular Pn'))
 
-    expect(screen.getByLabelText('Pn')).toHaveValue("1.3333333333");
-  });
-
-  test('test Pn calculation n>=s', async () => {
-
-    const vals = [
-      { objectID: '1', title: 'Hello' },
-    ];
-
-    axios.get.mockImplementationOnce(() =>
-      Promise.resolve({ data: vals })
-    );
-
-    render(<MMSK />);
-    userEvent.type(screen.getByLabelText('lambda'), '2');
-
-    userEvent.type(screen.getByLabelText('miu'), '3');
-
-    userEvent.type(screen.getByLabelText('s'), '1');
-
-    userEvent.type(screen.getByLabelText('k'), '3');
-
-    await userEvent.click(screen.getByText('Calcular'));
-
-    userEvent.type(screen.getByText('n'), '3');
-
-    userEvent.click(screen.getByText('Calcular Pn'));
-
-    expect(screen.getByLabelText('Pn')).toHaveValue("0.5925925926");
-  });
-
-  test('test Pn calculation n > k', async () => {
-
-    const vals = [
-      { objectID: '1', title: 'Hello' },
-    ];
-
-    axios.get.mockImplementationOnce(() =>
-      Promise.resolve({ data: vals })
-    );
-
-    render(<MMSK />);
-    userEvent.type(screen.getByLabelText('lambda'), '2');
-
-    userEvent.type(screen.getByLabelText('miu'), '3');
-
-    userEvent.type(screen.getByLabelText('s'), '1');
-
-    userEvent.type(screen.getByLabelText('k'), '3');
-
-    await userEvent.click(screen.getByText('Calcular'))
-
-    userEvent.type(screen.getByText('n'), '5');
-
-    userEvent.click(screen.getByText('Calcular Pn'))
-
-    expect(screen.getByLabelText('Pn')).toHaveValue("0.0000000000");
+    expect(screen.getByLabelText('Pn')).toHaveValue("8");
   });
 
   test('test costs calculation', async () => {
@@ -251,25 +188,22 @@ describe("Run cases", () => {
       Promise.resolve({ data: vals })
     );
 
-    render(<MMSK />);
-    userEvent.type(screen.getByLabelText('lambda'), '2');
+    render(<MG1 />);
+    userEvent.type(screen.getByLabelText('lambda'), '3');
 
-    userEvent.type(screen.getByLabelText('miu'), '3');
+    userEvent.type(screen.getByLabelText('miu'), '5');
 
-    userEvent.type(screen.getByLabelText('s'), '1');
-
-    userEvent.type(screen.getByLabelText('k'), '3');
+    userEvent.type(screen.getByLabelText('stdev'), '2');
 
     await userEvent.click(screen.getByText('Calcular'))
 
-    userEvent.type(screen.getByText('Cw'), '15');
-    userEvent.type(screen.getByText('Cs'), '12');
+    userEvent.type(screen.getByText('Cw'), '1.4');
+    userEvent.type(screen.getByText('Cs'), '23');
 
     userEvent.click(screen.getByText('Calcular CT'))
 
-    expect(screen.getByLabelText('Ct')).toHaveValue("42");
+    expect(screen.getByLabelText('Ct')).toHaveValue("25.8");
   });
 });
 
   
-
