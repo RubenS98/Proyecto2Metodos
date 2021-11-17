@@ -34,10 +34,10 @@ function MM1() {
         setValues([2,2,2,2,2,2]);
       }
     };
-    if (lambda<0 || miu<0){
+    if (lambda<=0 || miu<=0){
       setHT1('Valores deben ser mayores a 0.')
     }
-    else if(lambda>miu){
+    else if(lambda>=miu){
       setHT1('Miu debe ser mayor a lambda.')
     }
     else{
@@ -53,37 +53,37 @@ function MM1() {
   const handleSubmit2 = (event) => {
     event.preventDefault();
     if (n<0){
-      setHT2('Valores deben ser mayores a 0.')
+      setHT2('Valores deben ser positivos.')
     }
     else{
       setHT2('')
-      setPN(values[1]*values[0]**parseInt(n));
+      setPN(values[1]*(values[0]**n));
     }
     
   };
   const handleSubmit3 = (event) => {
     event.preventDefault();
     if (cw<0 || cs<0){
-      setHT3('Valores deben ser mayores a 0.')
+      setHT3('Valores deben ser positivos.')
     }
     else if(values[0]==""){
       setHT3('Primero hay que introducir lambda y miu.')
     }
     else{
       setHT3('')
-      setCT(values[2]*cw+cs*1);
+      setCT((values[2]*cw)+(cs*1));
     }
     
   };
   
   const handleLambdaChange = (event) => {
-      setLambda(event.target.value);
+      setLambda(parseInt(event.target.value));
   };
   const handleMiuChange = (event) => {
-      setMiu(event.target.value);
+      setMiu(parseInt(event.target.value));
   };
   const handleNChange = (event) => {
-    setN(event.target.value);
+    setN(parseInt(event.target.value));
   };
   const handleCWChange = (event) => {
     setCW(event.target.value);

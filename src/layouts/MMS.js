@@ -24,19 +24,19 @@ function MMS() {
     const fetchData = async () => {
       try {
         const res = await axios({
-          url: `http://localhost:8000/mm1/${lambda}/${miu}`,
+          url: `http://localhost:8000/mms/${lambda}/${miu}/${s}`,
         });
         
-        setValues([res.data.roh,1-res.data.roh,res.data.Lq,res.data.L,res.data.Wq,res.data.W])
+        setValues([res.data.roh.toFixed(10),res.data.P0.toFixed(10),res.data.Lq.toFixed(10),res.data.L.toFixed(10),res.data.Wq.toFixed(10),res.data.W.toFixed(10)])
       } catch (error) {
         console.log(error);
         setValues([2,2,2,2,2,2]);
       }
     };
-    if (lambda<0 || miu<0 || s<0){
+    if (lambda<=0 || miu<=0 || s<=0){
       setHT1('Valores deben ser mayores a 0.')
     }
-    else if(lambda>(miu*s)){
+    else if(lambda>=(miu*s)){
       setHT1('Miu por s debe ser mayor a lambda.')
     }
     else{
@@ -53,15 +53,16 @@ function MMS() {
     event.preventDefault();
     let result;
     if (n<0){
-        setHT2('Valores deben ser mayores a 0.')
+        setHT2('Valores deben ser positivos.')
       }
       else{
         setHT2('')
-        if(n<s){
-            result=((lambda/miu)**n)/fact(n)
+        let num=n
+        if(num<s){
+            result=((lambda/miu)**num)/fact(num)
         }
         else{
-            result=((lambda/miu)**n)/(fact(s)*s**(n-s))
+            result=((lambda/miu)**num)/(fact(s)*(s**(num-s)))
         }
         setPN((values[1]*result).toFixed(10));
       }
@@ -77,7 +78,7 @@ function MMS() {
       }
       else{
         setHT3('')
-        setCT(values[2]*cw+s*cs);
+        setCT((values[2]*cw)+(s*cs));
       }
     
   };
@@ -90,16 +91,16 @@ function MMS() {
 };
   
   const handleLambdaChange = (event) => {
-      setLambda(event.target.value);
+    setLambda(parseInt(event.target.value));
   };
   const handleMiuChange = (event) => {
-      setMiu(event.target.value);
+    setMiu(parseInt(event.target.value));
   };
   const handleSChange = (event) => {
-    setS(event.target.value);
+    setS(parseInt(event.target.value));
 };
   const handleNChange = (event) => {
-    setN(event.target.value);
+    setN(parseInt(event.target.value));
   };
   const handleCWChange = (event) => {
     setCW(event.target.value);
