@@ -152,7 +152,33 @@ describe("Run cases", () => {
     expect(screen.getByLabelText('W')).toHaveValue("2");
   });
 
-  test('test Pn calculation', async () => {
+  test('test Pn calculation n<s', async () => {
+
+    const vals = [
+      { objectID: '1', title: 'Hello' },
+    ];
+
+    axios.get.mockImplementationOnce(() =>
+      Promise.resolve({ data: vals })
+    );
+
+    render(<MMS />);
+    userEvent.type(screen.getByLabelText('lambda'), '2');
+
+    userEvent.type(screen.getByLabelText('miu'), '3');
+
+    userEvent.type(screen.getByLabelText('s'), '2');
+
+    await userEvent.click(screen.getByText('Calcular'))
+
+    userEvent.type(screen.getByText('n'), '1');
+
+    userEvent.click(screen.getByText('Calcular Pn'))
+
+    expect(screen.getByLabelText('Pn')).toHaveValue("1.3333333333");
+  });
+
+  test('test Pn calculation n>=s', async () => {
 
     const vals = [
       { objectID: '1', title: 'Hello' },
