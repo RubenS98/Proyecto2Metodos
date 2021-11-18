@@ -24,7 +24,7 @@ function MG1() {
     const fetchData = async () => {
       try {
         const res = await axios({
-          url: `http://localhost:8000/mg1/${lambda}/${miu}/${stdev}`,
+          url: `https://9yqm43.deta.dev/mg1/${lambda}/${miu}/${stdev}`,
         });
         setValues([res.data.roh.toFixed(4),res.data.P0.toFixed(4),res.data.Lq.toFixed(4),res.data.L.toFixed(4),res.data.Wq.toFixed(4),res.data.W.toFixed(4)])
       } catch (error) {

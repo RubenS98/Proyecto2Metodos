@@ -23,7 +23,7 @@ function MM1() {
     const fetchData = async () => {
       try {
         const res = await axios({
-          url: `http://localhost:8000/mm1/${lambda}/${miu}`,
+          url: `https://9yqm43.deta.dev/mm1/${lambda}/${miu}`,
         });
 
         let result=res.data;

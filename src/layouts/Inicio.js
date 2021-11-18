@@ -19,7 +19,7 @@ function Inicio() {
                 <ul>
                   <li>Modelo M/M/1</li>
                   <li>Modelo M/M/s</li>
-                  <li>Modelo M/M/sK</li>
+                  <li>Modelo M/M/s/K</li>
                   <li>Modelo M/G/1</li>
                 </ul>
 

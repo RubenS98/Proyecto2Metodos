@@ -26,7 +26,7 @@ function MMSK() {
     const fetchData = async () => {
       try {
         const res = await axios({
-          url: `http://localhost:8000/mmsk/${lambda}/${miu}/${s}/${k}`,
+          url: `https://9yqm43.deta.dev/mmsk/${lambda}/${miu}/${s}/${k}`,
         });
         
         setValues([res.data.roh.toFixed(4),res.data.P0.toFixed(4),res.data.Lq.toFixed(4),res.data.L.toFixed(4),res.data.Wq.toFixed(4),res.data.W.toFixed(4)])

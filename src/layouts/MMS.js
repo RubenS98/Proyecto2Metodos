@@ -24,7 +24,7 @@ function MMS() {
     const fetchData = async () => {
       try {
         const res = await axios({
-          url: `http://localhost:8000/mms/${lambda}/${miu}/${s}`,
+          url: `https://9yqm43.deta.dev/mms/${lambda}/${miu}/${s}`,
         });
         
         setValues([res.data.roh.toFixed(10),res.data.P0.toFixed(10),res.data.Lq.toFixed(10),res.data.L.toFixed(10),res.data.Wq.toFixed(10),res.data.W.toFixed(10)])
