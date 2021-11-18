@@ -71,6 +71,8 @@ describe('Test input validation', () => {
 
     userEvent.type(screen.getByLabelText('s'), '-1');
 
+    userEvent.type(screen.getByLabelText('k'), '1');
+
     userEvent.click(screen.getByText('Calcular'))
 
     screen.getByText('Valores deben ser mayores a 0.')
@@ -86,9 +88,27 @@ describe('Test input validation', () => {
 
     userEvent.type(screen.getByLabelText('s'), '1');
 
+    userEvent.type(screen.getByLabelText('k'), '1');
+
     userEvent.click(screen.getByText('Calcular'))
 
     screen.getByText('Miu por s debe ser mayor a lambda.')
+  });
+
+  test('s larger than k error', async () => {
+
+    render(<MMSK />);
+    userEvent.type(screen.getByLabelText('lambda'), '2');
+
+    userEvent.type(screen.getByLabelText('miu'), '3');
+
+    userEvent.type(screen.getByLabelText('s'), '2');
+
+    userEvent.type(screen.getByLabelText('k'), '1');
+
+    userEvent.click(screen.getByText('Calcular'))
+
+    screen.getByText('K debe ser mayor o igual a s.')
   });
 
   test('negative numbers error n', async () => {

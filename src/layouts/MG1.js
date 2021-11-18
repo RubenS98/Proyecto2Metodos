@@ -26,7 +26,7 @@ function MG1() {
         const res = await axios({
           url: `https://9yqm43.deta.dev/mg1/${lambda}/${miu}/${stdev}`,
         });
-        setValues([res.data.roh.toFixed(4),res.data.P0.toFixed(4),res.data.Lq.toFixed(4),res.data.L.toFixed(4),res.data.Wq.toFixed(4),res.data.W.toFixed(4)])
+        setValues([res.data.roh.toFixed(10),res.data.P0.toFixed(10),res.data.Lq.toFixed(10),res.data.L.toFixed(10),res.data.Wq.toFixed(10),res.data.W.toFixed(10)])
       } catch (error) {
         console.log(error);
         setHT1("Error inesperado en el calculo.")

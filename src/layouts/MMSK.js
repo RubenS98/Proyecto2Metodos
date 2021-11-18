@@ -29,7 +29,7 @@ function MMSK() {
           url: `https://9yqm43.deta.dev/mmsk/${lambda}/${miu}/${s}/${k}`,
         });
         
-        setValues([res.data.roh.toFixed(4),res.data.P0.toFixed(4),res.data.Lq.toFixed(4),res.data.L.toFixed(4),res.data.Wq.toFixed(4),res.data.W.toFixed(4)])
+        setValues([res.data.roh.toFixed(10),res.data.P0.toFixed(10),res.data.Lq.toFixed(10),res.data.L.toFixed(10),res.data.Wq.toFixed(10),res.data.W.toFixed(10)])
       } catch (error) {
         console.log(error);
         setHT1("Error inesperado en el calculo.")
@@ -41,6 +41,9 @@ function MMSK() {
     }
     else if(lambda>=(miu*s)){
       setHT1('Miu por s debe ser mayor a lambda.')
+    }
+    else if(s>k){
+      setHT1('K debe ser mayor o igual a s.')
     }
     else{
       setHT1('')
@@ -64,7 +67,7 @@ function MMSK() {
             result = ((lambda/miu)**n)/fact(n);
         }
         else if(n <= k){
-            result = ((lambda/miu)**n)/(fact(s) * s**(n-s));
+            result = ((lambda/miu)**n)/(fact(s) * (s**(n-s)));
         } else {
             result = 0
         }
